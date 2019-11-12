@@ -1,0 +1,6 @@
+sudo launchctl load /Library/LaunchDaemons/com.weewx.weewxd.plist
+
+aws s3 sync /Groups/revitt/WebSites/Weewx/MountWeather/backgrounds/ s3://weather.cougar.eu.com/backgrounds/ --cache-control "max-age=86400"
+aws s3 sync /Groups/revitt/WebSites/Weewx/MountWeather/fonts/       s3://weather.cougar.eu.com/fonts/       --cache-control "max-age=86400"
+aws s3 sync /Groups/revitt/WebSites/Weewx/MountWeather/RSS/         s3://weather.cougar.eu.com/RSS/         --cache-control "max-age=86400"
+aws s3 sync /Groups/revitt/WebSites/Weewx/MountWeather/NOAA/        s3://weather.cougar.eu.com/NOAA/        --cache-control "max-age=86400"

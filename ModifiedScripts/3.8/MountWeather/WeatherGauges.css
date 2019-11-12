@@ -1,0 +1,23 @@
+/*
+ * $Revision: 001            $
+ * $Author: Mike Revitt      $
+ * $Date: 17th February 2014 $
+ */
+  
+/* Global */
+
+/* For the LED Screen */
+@font-face {
+    font-family: "Digital7";
+    src: url("fonts/digital_7_mono.eot");
+    src: local("☺"),
+        url("fonts/digital_7_mono.ttf") format("truetype"),
+        url("fonts/digital_7_mono.woff") format("woff");
+}
+#Digital-7-Font
+{
+    font-family: "Digital7";
+    font-size: 14pt;
+    font-color: #888888;
+}
+

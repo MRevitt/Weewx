@@ -1,0 +1,256 @@
+/*
+ * $Revision: 732 $
+ * $Author: tkeffer $
+ * $Date: 2012-11-03 13:59:51 -0700 (Sat, 03 Nov 2012) $
+ */
+  
+/* Global */
+
+body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    background-color: #D8DFE6;
+    background-attachment: scroll;
+}	
+
+#container {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/*
+ * This is the big header at the top of the page
+ */
+#masthead {
+    margin: 1% 1% 0 1%;
+    padding: 5px;
+    text-align: center;
+    border: 5px solid #A8AEB2;
+    border-style:ridge;
+    background: url('backgrounds/Hawaii2.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+#masthead h1 {
+    color: white;
+}
+#masthead h2 {
+    color: white;
+}
+
+#masthead h3 {
+    color: black;
+}
+
+/*
+ * This holds the About this weather station on the left:
+ */
+#statsGroup {
+    width: 29%;
+    min-height: 500px;
+    margin: 1%;
+    padding: 5px;
+    float: left;
+    border: 2px solid #A8AEB2;
+    background-color: #F0F8FF;
+    border-style:solid;
+    text-align: center;
+}
+
+#statsGroup .label {
+    text-align: right;
+    font-style: italic;
+}
+
+#statsGroup .data {
+    text-align: left;
+}
+
+.statsAbout table {
+    text-align: center;
+    width: 100%;
+}
+
+.statsAbout caption {
+    margin-top: 10px;
+    font-size: 14pt;
+    font-weight: bolder;
+    color: #3d6c87;
+    margin-bottom: 10px;
+}
+
+.statsAbout td {
+    width: 50%;
+    padding: 2px;
+}
+
+.statsAlmanac table {
+    width: 100%;
+}
+
+.statsAlmanac th {
+    text-align: center;
+    margin-top: 5x;
+    font-size: 14pt;
+    font-weight: bolder;
+    color: #3d6c87;
+    margin-bottom: 5px;
+    width: 5%;
+}
+
+.statsAlmanac td {
+    width: 5%;
+    padding: 1px;
+}
+
+.statsAlmanac img {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.statsToday table {
+    border: thin solid #000000;
+    width: 100%;
+}
+.statsToday td {
+    border: thin solid #000000;
+    padding: 2px;
+}
+
+.statsHeader  {
+    background-color: #484A4C;
+    color: #F0F8FF;
+    font-size: 14pt;
+    font-weight: bolder;
+    text-align:center;
+}
+
+.stats_label {
+    color: green;
+}
+
+.stats_data {
+    color: red;
+}
+
+.statsMaps {
+    text-align:center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+}
+
+.statsMaps img {
+    box-shadow: 0px 0px 15px 5px rgba(119, 119, 119, 0.8);
+    width: 90%;
+}
+
+.statsVisitors {
+    text-align:center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3px;
+}
+
+.statsVisitors img {
+    box-shadow: 0px 0px 15px 5px rgba(119, 119, 119, 0.8);
+    padding: 2px;
+}
+
+/*
+ * This holds the Current Weather, and plots on the right
+ */
+#content {
+    width: 62%;
+    min-height: 500px;
+    margin: 1%;
+    padding: 2px;
+    float: right;
+    border: 2px solid #A8AEB2;
+    background-color: #F0F8FF;
+    border-style:solid;
+    text-align: center;
+}
+
+#content .header {
+    font-size: 14pt;
+    font-weight: bolder;
+    color: #3d6c87;
+    margin-bottom: 10px;
+}
+
+
+#content .caption {
+    font-weight: bold;
+    color: #3d6c87;
+}
+
+#content table {
+    text-align: center;
+    width: 100%;
+}
+
+#content td {
+    width: 50%;
+}
+
+#content .label {
+    text-align: right;
+    font-style: italic;
+}
+
+#content .data {
+    text-align: left;
+}
+
+#about {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30px;
+}
+
+#Gauges {
+    width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#plots {
+    width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+    
+#plots img {
+    box-shadow: 0px 0px 10px 5px rgba(119, 119, 119, 0.8);
+    border-style:none;
+    margin: 3%;
+    padding: 3px;
+}
+
+/*
+ * Navigation bar (week, month, etc.) at the bottom
+ */
+#navbar {
+    margin: 0 1% 1% 1%;
+    padding: 5px;
+    text-align: center;
+    clear: both;
+    border: 4px solid #A8AEB2;
+    border-style:inset;
+    background-color: #F0F8FF;
+}
+/*************** Global Styles ***************/
+
+h2, h3, h4, h5, h6 {
+    color: #3d6c87;
+}

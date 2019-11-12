@@ -1,0 +1,234 @@
+## Copyright 2009-2018 Tom Keffer, Matthew Wall
+## Distributed under terms of GPLv3.  See LICENSE.txt for your rights.
+#errorCatcher Echo
+##
+## Specifying an encoding of UTF-8 is usually safe:
+#encoding UTF-8
+##
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    ## This choice should match the #encoding directive above
+    <meta charset="UTF-8">
+    <title>$station.location</title>
+    <link rel="icon" type="image/png" href="favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="seasons.css"/>
+    <link rel="stylesheet" type="text/css" href="WeatherGauges.css"/>
+    <script src="seasons.js"></script>
+    <script src="WeatherGauges.js"></script>
+</head>
+
+<body onload="setup();">
+    <div id="container">
+        <div id="masthead">
+            <h1>Huddersfield, West Yorkshire</h1>
+            <h2>Current Weather Conditions</h2>
+            <h3>$current.dateTime</h2>
+        </div>
+    </div>
+    #include "titlebar.inc"
+    
+    <div id="contents">
+        <div id="widget_group">
+            #include "sunmoon.inc"
+            #include "hilo.inc"
+            #include "sensors.inc"
+            #include "about.inc"
+            <div id='visitors' class="widget">
+                <div class="widget_title">
+                    <a href=http://s05.flagcounter.com/map/DXQp/size_s/txt_000000/border_FFFFFF/pageviews_1/viewers_3/flags_1/>Visitors</a>
+                </div>
+                <div class="widget_contents">
+                    <p><img src="http://s05.flagcounter.com/count/DXQp/bg_FFFFFF/txt_000000/border_FFFFFF/columns_3/maxflags_50/viewers_3/labels_1/pageviews_1/flags_1/"></p>
+                </div>
+            </div>
+        </div>
+        <div id="content">
+                <div id="about">
+                <div class="header">Current Weather:</div>
+                <div id="Gauges">
+                    <canvas id="CurrTemp"></canvas>
+                    <canvas id="WindChill"></canvas>
+                    <canvas id="Humidity"></canvas>
+                    <canvas id="Barometer"></canvas>
+                    <canvas id="Compass"></canvas>
+                    <canvas id="WindSpeed"></canvas>
+                </div> <!-- End id "Gauges" -->
+                <script type="text/javascript">
+                    drawGauge
+                    ({
+                        Canvas      : 'CurrTemp',
+                        MinValue    :   -10 ,
+                        MaxValue    :    40 ,
+                        MajorTicks  : ['-10','0','10','20','30','40'],
+                        TitleText   : 'Temperature',
+                        UnitsText   : '°C',
+                        LcdFormat   : { Integer     : 2,
+                                        Fraction    : 1
+                                      },
+                        Needle      : { Value : $current.outTemp.formatted },
+                        Highlights  : [{
+                                        From    : -10,
+                                        To      :  10,
+                                        Colour  : 'LightBlue'
+                                      },
+                                      {
+                                        From    :  10,
+                                        To      :  30,
+                                        Colour  : 'PaleGreen'
+                                      },
+                                      {
+                                        From    :  30,
+                                        To      :  40,
+                                        Colour  : 'LightSalmon'
+                                      }]
+                    });
+                    drawGauge
+                    ({
+                        Canvas      : 'WindChill',
+                        MinValue    :   -10,
+                        MaxValue    :    40,
+                        MajorTicks  : ['-10','0','10','20','30','40'],
+                        TitleText   : 'Wind Chill',
+                        UnitsText   : '°C',
+                        LcdFormat   : { Integer     : 2,
+                                        Fraction    : 1
+                                      },
+                        Needle      : { Value : $current.windchill.formatted  },
+                        Highlights  : [{
+                                        From    : -10,
+                                        To      :  10,
+                                        Colour  : 'LightBlue'
+                                      },
+                                      {
+                                        From    :  10,
+                                        To      :  30,
+                                        Colour  : 'PaleGreen'
+                              },
+                              {
+                                From    :  30,
+                                To      :  40,
+                                Colour  : 'LightSalmon'
+                              }]
+                    });
+                    drawGauge
+                    ({
+                        Canvas      : 'Humidity',
+                        TitleText   : 'Humidity',
+                        UnitsText   : '%',
+                        LcdFormat   : { Integer     : 2,
+                                        Fraction    : 1
+                                      },
+                        Needle      : { Value       :  $current.outHumidity.formatted,
+                                        StartColour : 'lightgreen',
+                                        EndColour   : 'navy' },
+                        Colours     : { MajorTick   : 'darkgreen',
+                                        MinorTick   : 'lightgreen',
+                                        Plate       : 'lightyellow',
+                                        Title       : 'green',
+                                        Units       : 'darkgreen',
+                                        Number      : 'darkgreen'
+                                      }
+                    });
+                    drawBarometer
+                    ({
+                        Canvas      : 'Barometer',
+                        Value       :  $current.barometer.formatted,
+                        Trend       : #if $trend.barometer.raw > 2.0
+                                        'Rising Rapidly'
+                                      #else if $trend.barometer.raw >  0.7
+                                        'Rising Slowly'
+                                      #else if $trend.barometer.raw < -2.0
+                                        'Falling Rapidly'
+                                      #else if $trend.barometer.raw < -0.7
+                                        'Falling Slowly'
+                                      #else
+                                        'Steady'
+                                      #end if
+                    });
+                    drawCompass
+                    ({
+                        Canvas      :  'Compass',
+                        Needle      : { Value       : "$current.windDir.raw"
+                                      }
+                    });
+                    drawGauge
+                    ({
+                        Canvas      : 'WindSpeed',
+                        TitleText   : 'Wind Speed',
+                        UnitsText   : 'MPH',
+                        MinValue    :    0,
+                        MaxValue    :   60,
+                        MajorTicks  : ['0','15','30','45','60'],
+                        MinorTicks  :   15,
+                        LcdFormat   : { Integer     : 3,
+                                        Fraction    : 0
+                                      },
+                        Needle      : { Value       : $current.windSpeed.formatted,
+                                        MaxValue    : $day.wind.max.formatted }
+                    });
+                </script>
+            </div> <!-- End id "about" -->
+        <div id="plot_group">
+            <div id="history_widget" class="widget">
+                <div id="plot_title" class="widget_title">History:&nbsp;&nbsp;
+                    <a class="button_selected" id="button_history_day"  onclick="choose_history('day')">Day</a>
+                    <a class="button" id="button_history_week"          onclick="choose_history('week')">Week</a>
+                    <a class="button" id="button_history_month"         onclick="choose_history('month')">Month</a>
+                    <a class="button" id="button_history_year"          onclick="choose_history('year')">Year</a>
+                </div>
+            <div id="plots">
+                <iframe id="forecast_embed" type="text/html" frameborder="0" height="230" width="100%" src="https://forecast.io/embed/#lat=53.6610&lon=-1.8505&name=Huddersfield&color=#BBBBBB&units=UK">
+                </iframe>
+            <div id="history_day" class="plot_container">
+                <img src="daytempdew.png"   alt="$obs.label.outTemp" />
+                <img src="daytempfeel.png"  alt="$obs.label.feel" />
+                <img src="daytempin.png"    alt="$obs.label.inTemp" />
+                <img src="dayrain.png"      alt="$obs.label.rain" />
+                <img src="daywind.png"      alt="$obs.label.windSpeed" />
+                <img src="daybarometer.png" alt="$obs.label.barometer"/>
+                <img src="daywinddir.png"   alt="$obs.label.windDir" />
+                <img src="dayrx.png"        alt="$obs.label.rxCheckPercent"/>
+            </div>
+            <div id="history_week" class="plot_container" style="display:none">
+                <img src="weektempdew.png"   alt="$obs.label.outTemp" />
+                <img src="weektempfeel.png"  alt="$obs.label.feel" />
+                <img src="weektempin.png"    alt="$obs.label.inTemp" />
+                <img src="weekrain.png"      alt="$obs.label.rain" />
+                <img src="weekwind.png"      alt="$obs.label.windSpeed" />
+                <img src="weekbarometer.png" alt="$obs.label.barometer"/>
+                <img src="weekwinddir.png"   alt="$obs.label.windDir" />
+                <img src="weekrx.png"        alt="$obs.label.rxCheckPercent"/>
+            </div>
+            <div id="history_month" class="plot_container" style="display:none">
+                <img src="monthtempdew.png"   alt="$obs.label.outTemp" />
+                <img src="monthtempfeel.png"  alt="$obs.label.feel" />
+                <img src="monthtempin.png"    alt="$obs.label.inTemp" />
+                <img src="monthrain.png"      alt="$obs.label.rain" />
+                <img src="monthwind.png"      alt="$obs.label.windSpeed" />
+                <img src="monthbarometer.png" alt="$obs.label.barometer"/>
+                <img src="monthwinddir.png"   alt="$obs.label.windDir" />
+                <img src="monthrx.png"        alt="$obs.label.rxCheckPercent"/>
+            </div>
+            <div id="history_year" class="plot_container" style="display:none">
+                <img src="yeartempdew.png"   alt="$obs.label.outTemp" />
+                <img src="yeartempfeel.png"  alt="$obs.label.feel" />
+                <img src="yeartempin.png"    alt="$obs.label.inTemp" />
+                <img src="yearrain.png"      alt="$obs.label.rain" />
+                <img src="yearwind.png"      alt="$obs.label.windSpeed" />
+                <img src="yearbarometer.png" alt="$obs.label.barometer"/>
+                <img src="yearwinddir.png"   alt="$obs.label.windDir" />
+                <img src="yearrx.png"        alt="$obs.label.rxCheckPercent"/>
+            </div>
+        </div>
+    </div>
+</div>
+    <p class="footnote">
+      This station is controlled by <a href="http://weewx.com/">WeeWX</a>, an
+      experimental weather software system written in Python.
+    </p>
+
+    #include "analytics.inc"
+
+</body>
+</html>

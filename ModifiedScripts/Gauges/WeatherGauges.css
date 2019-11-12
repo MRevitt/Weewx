@@ -1,0 +1,66 @@
+/*
+ * $Revision: 001            $
+ * $Author: Mike Revitt      $
+ * $Date: 17th February 2014 $
+ */
+  
+/* Global */
+
+/* For the LED Screen */
+@font-face {
+    font-family: "Digital7";
+    src: url("fonts/digital_7_mono.eot");
+    src: local("☺"),
+        url("fonts/digital_7_mono.ttf") format("truetype"),
+        url("fonts/digital_7_mono.woff") format("woff");
+}
+#Digital-7-Font
+{
+    font-family: "Digital7";
+    font-size: 14pt;
+    font-color: #888888;
+}
+/*
+ * This is the big header at the top of the page
+ */
+#masthead {
+    text-align: center;
+    border: 2px solid #A8AEB2;
+    background: url('backgrounds/Hawaii2.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+#masthead h1 {
+    color: white;
+}
+#masthead h2 {
+    color: white;
+}
+
+#masthead h3 {
+    color: black;
+}
+
+/*
+ * This holds the About this weather station on the left:
+ */
+
+#content {
+    min-height: 500px;
+    margin: 1%;
+    text-align: center;
+}
+#content .header {
+    font-size: 14pt;
+    font-weight: bolder;
+    color: #4282b4;
+    margin-bottom: 10px;
+}
+
+#Gauges {
+    width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
