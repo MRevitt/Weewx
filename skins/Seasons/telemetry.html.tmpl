@@ -1,0 +1,64 @@
+## Copyright 2017 Tom Keffer, Matthew Wall
+## Distributed under terms of GPLv3.  See LICENSE.txt for your rights.
+#errorCatcher Echo
+##
+## Mike Revitt - Added tempimg to display
+#encoding UTF-8
+
+#def period_plots($label)
+<div id="history_${label}" class="plot_containter" style="display:none">
+#set $rximg     = "%srx.png"      % ($label)
+#set $voltimg   = "%svolt.png"    % ($label)
+#set $tempimg   = "%sCPUtemp.png" % ($label)
+<img src="$rximg"   alt="Signal Quality"/>
+<img src="$voltimg" alt="Console Battery"/>
+<img src="$tempimg" alt="CPU Temp"/>
+</div>
+#end def
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    #metaData meta.inc
+    <title>$station.location Telemetry</title>
+    <link rel="stylesheet" type="text/css" href="seasons.css"/>
+    <script type="text/javascript" src="seasons.js"></script>
+  </head>
+
+  <body onload="setup();">
+    #include "titlebar.inc"
+    
+    <div id="contents">
+      <p><a href="index.html">&#10096; Current Conditions</a></p>
+
+      <div id="widget_group">
+        #include "sensors.inc"
+      </div>
+
+      <div id="plot_group">
+        <div id="history_widget" class="widget">
+          <div id="plot_title" class="widget_title">Telemetry:&nbsp;&nbsp;
+            <a class="button_selected" id="button_history_day"
+               onclick="choose_history('day')">Day</a>
+            <a class="button" id="button_history_week"
+               onclick="choose_history('week')">Week</a>
+            <a class="button" id="button_history_month"
+               onclick="choose_history('month')">Month</a>
+            <a class="button" id="button_history_year"
+               onclick="choose_history('year')">Year</a>
+          </div>
+          $period_plots('day')
+          
+          $period_plots('week')
+
+          $period_plots('month')
+
+          $period_plots('year')
+        </div>
+      </div>
+
+      #include "identifier.inc"
+    </div>
+
+  </body>
+</html>

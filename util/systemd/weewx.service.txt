@@ -1,0 +1,21 @@
+# systemd configuration for weewx
+
+[Unit]
+Description=weewx weather system
+Requires=time-sync.target
+After=network.target
+After=time-sync.target
+RequiresMountsFor=/home
+StartLimitIntervalSec=100
+StartLimitBurst=5
+
+[Service]
+ExecStart=/home/weewx/bin/weewxd --daemon --pidfile=/run/weewx.pid /home/weewx/weewx.conf
+ExecReload=/bin/kill -HUP $MAINPID
+Type=simple
+PIDFile=/run/weewx.pid
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

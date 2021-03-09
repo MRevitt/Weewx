@@ -1,0 +1,231 @@
+## Copyright 2009-2018 Tom Keffer, Matthew Wall
+## Distributed under terms of GPLv3.  See LICENSE.txt for your rights.
+##
+## Mike Revitt - Lots of changes, adding gauges for one and chaning images displayed
+#errorCatcher Echo
+##
+## Specifying an encoding of UTF-8 is usually safe:
+#encoding UTF-8
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  #metaData meta.inc
+  <meta http-equiv="refresh" content="300" />
+  <title>$station.location</title>
+  <link rel="stylesheet" type="text/css" href="seasons.css" media="screen"/>
+  <script async type="text/javascript" src="seasons.js"></script>
+</head>
+
+<body onload="setup();">
+    <!-- The following tag instantiates the Digital-7-Mono font and is required to load -->
+    <!-- the font into the browser prior to using it in the Gauges.                     -->
+    <!-- Text has to exist or it doesn't get called so we set the style to invisible.   -->
+    <!-- and the height to 0 so that we can't see it.                                   -->
+    <!-- This is then called by the setTimeout command in the JavaScript file           -->
+  <div id="Digital-7-Font" style="visibility: hidden; height: 0"<p>LED 1 2 3 4 </p></div>
+
+  #include "titlebar.inc"
+  <section id="main-content">
+    <div id="contents">
+      <div id="widget_group">
+        #include "sunmoon.inc"
+        #include "hilo.inc"
+        #include "sensors.inc"
+        #include "about.inc"
+      </div>
+      <div id="WeatherGauges">
+        <div class="header">Current Weather:</div>
+        <div>
+          <canvas id="CurrTemp"></canvas>
+          <canvas id="WindChill"></canvas>
+          <canvas id="Humidity"></canvas>
+          <canvas id="Barometer"></canvas>
+          <canvas id="Compass"></canvas>
+          <canvas id="WindSpeed"></canvas>
+        </div>
+        <script type="text/javascript" src="WeatherGauges.js"></script>
+        <script type="text/javascript">
+        drawGauge
+        ({
+          Canvas      :   'CurrTemp',
+          MinValue    :   -10,
+          MaxValue    :   40,
+          MajorTicks  :   ['-10','0','10','20','30','40'],
+          TitleText   :   'Temperature',
+          UnitsText   :   'Celsius',
+          LcdFormat   :   { Integer     : 2,
+                            Fraction    : 1},
+          Needle      :   { Value : $current.outTemp.formatted},
+          Highlights  : [ { From    : -10,
+                            To      :  10,
+                            Colour  : 'LightBlue'},
+                          { From    :  10,
+                            To      :  30,
+                            Colour  : 'PaleGreen'},
+                          { From    :  30,
+                            To      :  40,
+                            Colour  : 'LightSalmon'}
+                        ]
+        });
+        drawGauge
+        ({
+          Canvas      :     'WindChill',
+          MinValue    :     -10,
+          MaxValue    :     40,
+          MajorTicks  : [   '-10','0','10','20','30','40'],
+          TitleText   :     'Wind Chill',
+          UnitsText   :     'Celsius',
+          LcdFormat   :   { Integer     : 2,
+                            Fraction    : 1},
+          Needle      :   { Value : $current.windchill.formatted},
+          Highlights  : [ { From    : -10,
+                            To      :  10,
+                            Colour  : 'LightBlue'},
+                          { From    :  10,
+                            To      :  30,
+                            Colour  : 'PaleGreen'},
+                          { From    :  30,
+                            To      :  40,
+                            Colour  : 'LightSalmon'}
+                        ]
+        });
+        drawGauge
+        ({
+          Canvas      :     'Humidity',
+          TitleText   :     'Humidity',
+          UnitsText   :     '%',
+          LcdFormat   :   { Integer     : 2,
+                            Fraction    : 1},
+          Needle      :   { Value       :  $current.outHumidity.formatted,
+                            StartColour : 'lightgreen',
+                            EndColour   : 'navy' },
+          Colours     :   { MajorTick   : 'darkgreen',
+                            MinorTick   : 'lightgreen',
+                            Plate       : 'lightyellow',
+                            Title       : 'green',
+                            Units       : 'darkgreen',
+                            Number      : 'darkgreen'}
+        });
+        drawBarometer
+        ({
+          Canvas      :     'Barometer',
+          Value       :     $current.barometer.formatted,
+          Trend       : #if $trend.barometer.raw is not None
+                          #if $trend.barometer.raw > 2.0
+                            'Rising Rapidly'
+                          #else if $trend.barometer.raw >  0.7
+                            'Rising Slowly'
+                          #else if $trend.barometer.raw < -2.0
+                            'Falling Rapidly'
+                          #else if $trend.barometer.raw < -0.7
+                            'Falling Slowly'
+                          #else
+                            'Steady'
+                          #end if
+                        #else
+                          'Steady'
+                        #end if
+        });
+        drawCompass
+        ({
+          Canvas      :  'Compass',
+          Needle      : { Value       : "$current.windDir.raw" }
+        });
+        drawGauge
+        ({
+          Canvas      :     'WindSpeed',
+          TitleText   :     'Wind Speed',
+          UnitsText   :     'MPH',
+          MinValue    :     0,
+          MaxValue    :     60,
+          MajorTicks  : [   '0','15','30','45','60'],
+          MinorTicks  :     15,
+          LcdFormat   :   { Integer     : 3,
+                            Fraction    : 0},
+          Needle      :   { Value       : $current.windSpeed.formatted,
+                            MaxValue    : $day.wind.max.formatted }
+        });
+      </script>
+    </div> <!-- End id "WeatherGauges" -->
+    <div id="plot_group">
+      <div id="plot_title" class="widget_title">History:&nbsp;&nbsp;
+        <a class="button_selected" id="button_history_day"  onclick="choose_history('day')">Day</a>
+        <a class="button" id="button_history_seven_day"     onclick="choose_history('seven_day')">Week</a>
+        <a class="button" id="button_history_month"         onclick="choose_history('month')">Month</a>
+        <a class="button" id="button_history_year"          onclick="choose_history('year')">Year</a>
+        <a class="button" id="button_history_alltime"       onclick="choose_history('alltime')">All Time</a>
+      </div>
+      <hr style="height:4px;border-width:0;border-radius:2px;color:gray;background-color:gray">
+      <br>
+      <a class="weatherwidget-io" href="https://forecast7.com/en/53d65n1d79/huddersfield/" data-label_1="Huddersfield" data-label_2="Weather" data-icons="Climacons Animated" data-theme="pure" >Huddersfield Weather</a>
+      <script>
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+      </script>
+      <br>
+      <div id="history_widget" class="widget">
+        <div id="history_day" class="plot_container">
+          <img src="daytempdew.png"       alt="$obs.label.outTemp" />
+          <img src="dayCaravantemp.png"   alt="$obs.label.extraTemp2" />
+          <img src="daytempin.png"        alt="$obs.label.inTemp" />
+          <img src="dayLoungetemp.png"    alt="$obs.label.extraTemp3" />
+          <img src="daywind.png"          alt="$obs.label.windSpeed" />
+          <img src="daywinddir.png"       alt="$obs.label.windDir" />
+          <img src="dayrain.png"          alt="$obs.label.rain" />
+          <img src="daybarometer.png"     alt="$obs.label.barometer"/>
+          <img src="daytempfeel.png"      alt="$obs.label.feel" />
+        </div>
+        <div id="history_seven_day" class="plot_container" style="display:none">
+          <img src="weektempdew.png"      alt="$obs.label.outTemp" />
+          <img src="weekCaravantemp.png"  alt="$obs.label.extraTemp2" />
+          <img src="weektempin.png"       alt="$obs.label.inTemp" />
+          <img src="weekLoungetemp.png"   alt="$obs.label.extraTemp3" />
+          <img src="weekwind.png"         alt="$obs.label.windSpeed" />
+          <img src="weekwinddir.png"      alt="$obs.label.windDir" />
+          <img src="weekrain.png"         alt="$obs.label.rain" />
+          <img src="weekbarometer.png"    alt="$obs.label.barometer"/>
+          <img src="weektempfeel.png"     alt="$obs.label.feel" />
+        </div>
+        <div id="history_month" class="plot_container" style="display:none">
+          <img src="monthhilow.png"       alt="$obs.label.outTemp" />
+          <img src="monthCaravantemp.png" alt="$obs.label.extraTemp2" />
+          <img src="monthtempin.png"      alt="$obs.label.inTemp" />
+          <img src="monthLoungetemp.png"  alt="$obs.label.extraTemp3" />
+          <img src="monthwind.png"        alt="$obs.label.windSpeed" />
+          <img src="monthwinddir.png"     alt="$obs.label.windDir" />
+          <img src="monthrain.png"        alt="$obs.label.rain" />
+          <img src="monthbarometer.png"   alt="$obs.label.barometer"/>
+          <img src="monthtempfeel.png"    alt="$obs.label.feel" />
+        </div>
+        <div id="history_year" class="plot_container" style="display:none">
+          <img src="yearhilow.png"        alt="$obs.label.outTemp" />
+          <img src="yearCaravantemp.png"  alt="$obs.label.extraTemp2" />
+          <img src="yeartempin.png"       alt="$obs.label.inTemp" />
+          <img src="yearLoungetemp.png"   alt="$obs.label.extraTemp3" />
+          <img src="yearwind.png"         alt="$obs.label.windSpeed" />
+          <img src="yearrain.png"         alt="$obs.label.rain" />
+          <img src="yearbarometer.png"    alt="$obs.label.barometer"/>
+          <img src="yearCPUtemp.png"      alt="$obs.label.feel" />
+        </div>
+        <div id="history_alltime" class="plot_container" style="display:none">
+          <img src="2yearhilow.png"       alt="$obs.label.outTemp" />
+          <img src="2yearwind.png"        alt="$obs.label.windSpeed" />
+          <img src="2yearrain.png"        alt="$obs.label.rain" />
+          <img src="5yearhilow.png"       alt="$obs.label.outTemp" />
+          <img src="5yearwind.png"        alt="$obs.label.windSpeed" />
+          <img src="5yearrain.png"        alt="$obs.label.rain" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="footnote">
+    This station is controlled by <a href="http://weewx.com/">WeeWX</a>, an
+    experimental weather software system written in Python.
+  </p>
+
+  #include "analytics.inc"
+  </section>
+
+</body>
+
+</html>
